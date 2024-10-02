@@ -1,0 +1,9 @@
+[submodule "src/usb_cam_haun"]
+	path = src/usb_cam_haun
+	url = https://github.com/ros-drivers/usb_cam.git
+[submodule "src/yolov8_ros_haun"]
+	path = src/yolov8_ros_haun
+	url = https://github.com/mgonzs13/yolov8_ros.git
+[submodule "src/image_pipeline_haun"]
+	path = src/image_pipeline_haun
+	url = https://github.com/ros-perception/image_pipeline

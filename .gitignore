@@ -1,0 +1,11 @@
+install/*
+build/*
+log/*
+.vscode/*
+image.png
+yolov8m.pt
+yolov10m.pt
+launch/build/*
+launch/install/*
+launch/log/*
+*/__pycache__
