@@ -35,7 +35,7 @@ def generate_launch_description():
         'params_1.yaml'
     )
     proc_path = os.path.join(
-        get_package_share_directory('image_proc')
+        get_package_share_directory('image_proc'),
         'launch',
         'image_proc.launch.py'
     )
