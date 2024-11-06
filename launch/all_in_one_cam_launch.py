@@ -29,8 +29,6 @@ def generate_launch_description():
         'autoware_cam.rviz'
     )
 
-
-
     param_file = os.path.join(
         get_package_share_directory('usb_cam'),
         'config',
@@ -38,14 +36,28 @@ def generate_launch_description():
     )
     proc_path = os.path.join(
         get_package_share_directory('image_proc')
-    )
-    
-    include_sub_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(proc_path, 'launch', 'image_proc.launch.py')
-        )
+        'launch',
+        'image_proc.launch.py'
     )
 
+    xml_launch_file = os.path.join(
+        get_package_share_directory('yolov8_bringup'),  # 다른 패키지 이름으로 변경
+        'launch',
+        'yolov8.launch.py'  # 실행할 XML 파일 이름
+    )
+    
+    # 카메라 실행
+    camera_node = Node(
+            package='usb_cam',
+            namespace='usb_cam',
+            executable='usb_cam_node_exe',
+            name='usb_cam',
+            parameters=[param_file],
+            remappings = [('/usb_cam/image_raw', '/camera/rgb/image_raw'),
+                          ('/usb_cam/camera_info', '/camera/rgb/camera_info')] 
+        )
+    
+    # RVIZ 실행
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
@@ -55,12 +67,12 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('display'))  # display 인자가 'true'일 때만 실행
     )
 
-    xml_launch_file = os.path.join(
-        get_package_share_directory('yolov8_bringup'),  # 다른 패키지 이름으로 변경
-        'launch',
-        'yolov8.launch.py'  # 실행할 XML 파일 이름
+    # 이미지 전처리 실행
+    include_sub_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(proc_path)
     )
    
+    # YOLO 실행
     yolo_launch = IncludeLaunchDescription(
         AnyLaunchDescriptionSource(xml_launch_file)
     )
@@ -68,15 +80,9 @@ def generate_launch_description():
 
 
     return LaunchDescription([
+        camera_node,
         yolo_launch,
-        Node(
-            package='usb_cam',
-            namespace='usb_cam',
-            executable='usb_cam_node_exe',
-            name='usb_cam',
-            parameters=[param_file],
-            remappings = [('/usb_cam/image_raw', '/camera/rgb/image_raw'),
-                          ('/usb_cam/camera_info', '/camera/rgb/camera_info')] 
-        ) ,
-        include_sub_launch, declare_arg,rviz_node]
+        include_sub_launch, 
+        declare_arg,
+        rviz_node]
     )
