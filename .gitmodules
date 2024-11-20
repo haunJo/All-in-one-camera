@@ -1,9 +1,6 @@
 [submodule "src/usb_cam"]
 	path = src/usb_cam
 	url = https://github.com/ros-drivers/usb_cam.git
-[submodule "src/image_pipeline"]
-	path = src/image_pipeline
-	url = https://github.com/ros-perception/image_pipeline
 [submodule "src/yolo_ros"]
 	path = src/yolo_ros
 	url = https://github.com/mgonzs13/yolo_ros
