@@ -33,11 +33,14 @@ def generate_launch_description():
     usb_cam_config = config.get('usb_cam', {}).get('ros__parameters', {})
     display = usb_cam_config.get('display', False)
     rectify = usb_cam_config.get('rectify', False)
-
+    use_simulator = usb_cam_config.get('use_simulator', False)
+    
     rviz_config_file = os.path.join(
         'config',
         'yolo.rviz'
     )
+
+
 
     camera_param = os.path.join(
         get_package_share_directory('usb_cam'),
@@ -109,15 +112,28 @@ def generate_launch_description():
         output='screen',
     )
     # YOLO 실행
+
+    if use_simulator:
+        yolo_image_topic = "/sensing/camera/traffic_light/image_raw"
+    else:
+        yolo_image_topic = "/camera/rgb/image_raw"
+
+
+
     yolo_launch = IncludeLaunchDescription(
-        AnyLaunchDescriptionSource(xml_launch_file)
+        PythonLaunchDescriptionSource(xml_launch_file),
+        launch_arguments = {
+        'input_image_topic': yolo_image_topic
+        }.items()
     )
     
     excutes = [
-        camera_node,
-        yolo_launch,
+        yolo_launch
         ]
     
+    if not use_simulator:
+        excutes.append(camera_node)
+
     if rectify:
         excutes.append(image_processing)
     if display:

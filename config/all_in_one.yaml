@@ -2,4 +2,5 @@
 usb_cam:
   ros__parameters:
     display: true  # RViz 실행 여부
-    rectify: true  # 이미지 전처리 여부
+    rectify: false  # 이미지 전처리 여부
+    use_simulator: true
